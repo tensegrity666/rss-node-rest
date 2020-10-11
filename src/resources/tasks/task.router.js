@@ -1,10 +1,11 @@
 const router = require('express').Router({ mergeParams: true });
 const boardsService = require('../boards/board.service');
+const tasksService = require('./task.service');
 
 router.route('/').get(async (req, res) => {
   try {
-    const board = await boardsService.get(req.params.boardId);
-    const { tasks } = board;
+    const tasks = await tasksService.getAll(req.params.boardId);
+
     res.json(tasks);
   } catch (error) {
     throw new Error('Something goes wrong! ', error.message);
@@ -13,10 +14,9 @@ router.route('/').get(async (req, res) => {
 
 router.route('/:taskId').get(async (req, res) => {
   try {
-    const board = await boardsService.get(req.params.boardId);
-    const { tasks } = board;
-    const task = tasks.filter(el => el.id === req.params.taskId);
-    res.send(task);
+    const task = await tasksService.get(req.params.boardId, req.params.taskId);
+
+    res.json(task);
   } catch (error) {
     throw new Error('Something goes wrong! ', error.message);
   }
@@ -34,15 +34,16 @@ router.route('/:taskId').put(async (req, res) => {
 
   const board = await boardsService.get(req.params.boardId);
   const { tasks } = board;
-  const task = tasks.filter(el => el.id === req.params.taskId);
+  const task = await tasks.filter(el => el.id === req.params.taskId);
 
   res.json(Object.assign(...task, taskFragment));
 });
 
-// router.route('/:id').delete(async (req, res) => {
-//   const tasks = await usersService.del(req.params.id);
-//   res.json(tasks);
-// });
+router.route('/:taskId').delete(async (req, res) => {
+  const board = await boardsService.get(req.params.boardId);
+  const { tasks } = board;
+  res.json(tasks.filter(el => el.id !== req.params.taskId));
+});
 
 // router.route('/:id').put(async (req, res) => {
 //   const user = await usersService.update(req.params.id, {
