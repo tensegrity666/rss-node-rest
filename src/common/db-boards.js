@@ -1,11 +1,11 @@
 const Board = require('../resources/boards/board.model');
 const columnDB = require('./db-columns');
 
-const board1 = new Board(columnDB);
-const board2 = new Board(columnDB);
-const board3 = new Board(columnDB);
+const board1 = new Board({ title: 'First board', columns: columnDB });
+const board2 = new Board({ columns: columnDB });
+const board3 = new Board({ columns: columnDB });
 const board4 = {
-  id: '123',
+  id: '12345',
   title: 'VasyaBoard',
   columns: columnDB
 };

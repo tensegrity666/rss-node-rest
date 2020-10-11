@@ -1,15 +1,10 @@
 const uuid = require('uuid');
 
 class Board {
-  constructor(columns = [], { id = uuid(), title = 'BOARD' } = {}) {
-    this.id = id;
+  constructor({ title = 'Default board', columns = [] } = {}) {
+    this.id = uuid();
     this.title = title;
     this.columns = columns;
-  }
-
-  static toResponse(board) {
-    const { id, title, columns } = board;
-    return { id, title, columns };
   }
 }
 
