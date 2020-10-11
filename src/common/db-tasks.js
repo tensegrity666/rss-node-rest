@@ -1,8 +1,8 @@
 const Task = require('../resources/tasks/task.model');
 
-const task1 = new Task();
-const task2 = new Task();
-const task3 = new Task();
+const task1 = new Task({ title: 'Some title' });
+const task2 = new Task({ order: 2 });
+const task3 = new Task({ description: 'Thirddd task' });
 const task4 = {
   id: 't4',
   title: 'Task1',
@@ -11,13 +11,7 @@ const task4 = {
 };
 
 const tasksDB = [task1, task2, task3, task4];
-
-const getTask = id => tasksDB.filter(element => element.id === id)[0];
-
-// const createBoard = user => {
-//   tasksDB.push(user);
-//   return getBoard(user.id);
-// };
+const tasksDB2 = [task1, task2, task3, task4, task1, task1, task3, task3];
 
 // const deleteBoard = id => [...tasksDB.filter(element => element.id !== id)];
 
@@ -27,5 +21,5 @@ const getTask = id => tasksDB.filter(element => element.id === id)[0];
 //   return (tasksDB[index] = { id, user, ...value });
 // };
 
-module.exports = { getTask };
 module.exports = tasksDB;
+module.exports = tasksDB2;
