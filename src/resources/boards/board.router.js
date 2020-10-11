@@ -20,7 +20,8 @@ router.route('/').post(async (req, res) => {
   const board = await boardsService.create(
     new Board({
       title: req.body.title,
-      columns: req.body.columns
+      columns: req.body.columns,
+      tasks: []
     })
   );
   res.json(board);
