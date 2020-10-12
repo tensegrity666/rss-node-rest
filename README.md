@@ -1,6 +1,6 @@
 ### TASK 2 - EXPRESS REST SERVICE
 # Results:
-__`Tests:       6 failed, 11 passed, 17 total`__
+__`Tests:       6 failed, 11 passed, 17 total`__<br>
 _Not implemented: removing tasks, which are related with user and board_
 
 
