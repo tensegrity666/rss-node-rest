@@ -23,7 +23,9 @@ const task6 = {
 
 const tasksDB = [task1, task2, task3, task4, task5, task6];
 
-const getAllTasks = id => [tasksDB.filter(task => task.boardId === id)];
+const getAllTasks = boardId => [
+  tasksDB.filter(task => task.boardId === boardId)
+];
 
 const getTask = (boardId, taskId) => {
   const tasks = tasksDB.filter(task => task.boardId === boardId);
@@ -32,10 +34,19 @@ const getTask = (boardId, taskId) => {
   return task;
 };
 
+const deleteTask = (boardId, taskId) => {
+  const board = getAllTasks(boardId).flat();
+
+  const task = board.filter(element => element.id === taskId)[0];
+  task.boardId = null;
+
+  return getAllTasks(boardId).flat()[0];
+};
+
 // const updateBoard = (id, value) => {
 //   const user = getBoard(id);
 //   const index = tasksDB.indexOf(user);
 //   return (tasksDB[index] = { id, user, ...value });
 // };
 
-module.exports = { getAllTasks, getTask };
+module.exports = { getAllTasks, getTask, deleteTask };
