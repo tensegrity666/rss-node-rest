@@ -21,7 +21,7 @@ const task6 = {
   order: 4
 };
 
-const tasksDB = [task1, task2, task3, task4, task5, task6];
+let tasksDB = [task1, task2, task3, task4, task5, task6];
 
 const getAllTasks = boardId => [
   tasksDB.filter(task => task.boardId === boardId)
@@ -34,19 +34,32 @@ const getTask = (boardId, taskId) => {
   return task;
 };
 
+const createTask = (boardId, task) => {
+  tasksDB.push(task);
+
+  return getTask(boardId, task.id);
+};
+
 const deleteTask = (boardId, taskId) => {
   const board = getAllTasks(boardId).flat();
 
   const task = board.filter(element => element.id === taskId)[0];
   task.boardId = null;
 
+  const index = tasksDB.indexOf(task);
+  const boardsBefore = tasksDB.slice(0, index);
+  const boardsAfter = tasksDB.slice(index + 1);
+  tasksDB = [...boardsBefore, ...boardsAfter];
+
   return getAllTasks(boardId).flat()[0];
 };
 
-// const updateBoard = (id, value) => {
-//   const user = getBoard(id);
-//   const index = tasksDB.indexOf(user);
-//   return (tasksDB[index] = { id, user, ...value });
-// };
+const updateTask = (boardId, taskId, value) => {
+  const task = getTask(boardId, taskId);
 
-module.exports = { getAllTasks, getTask, deleteTask };
+  const updated = Object.assign(...task, value);
+
+  return updated;
+};
+
+module.exports = { getAllTasks, getTask, deleteTask, createTask, updateTask };
