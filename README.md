@@ -1,3 +1,9 @@
+# TASK 2 - EXPRESS REST SERVICE
+## Results:
+__`Tests:       6 failed, 11 passed, 17 total`__
+_Not implemented: removing tasks, which are related with user and board_
+
+
 # RS School REST service
 
 ## Prerequisites
