@@ -4,13 +4,13 @@ const usersService = require('./user.service');
 
 router.route('/').get(async (req, res) => {
   const users = await usersService.getAll();
-  res.json(users.map(User.toResponse));
+  res.status(200).json(users.map(User.toResponse));
 });
 
 router.route('/:userId').get(async (req, res) => {
   try {
     const user = await usersService.get(req.params.userId);
-    res.json(User.toResponse(user));
+    res.status(200).json(User.toResponse(user));
   } catch (error) {
     throw new Error('something goes wrong!');
   }
@@ -24,12 +24,12 @@ router.route('/').post(async (req, res) => {
       name: req.body.name
     })
   );
-  res.json(User.toResponse(user));
+  res.status(200).json(User.toResponse(user));
 });
 
 router.route('/:userId').delete(async (req, res) => {
   const users = await usersService.del(req.params.userId);
-  res.json(users.map(User.toResponse));
+  res.status(200).json(users.map(User.toResponse));
 });
 
 router.route('/:userId').put(async (req, res) => {
@@ -38,7 +38,7 @@ router.route('/:userId').put(async (req, res) => {
     password: req.body.password,
     name: req.body.name
   });
-  res.json(User.toResponse(user));
+  res.status(200).json(User.toResponse(user));
 });
 
 module.exports = router;

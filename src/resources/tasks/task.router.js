@@ -1,11 +1,12 @@
 const router = require('express').Router({ mergeParams: true });
+// const Task = require('./task.model');
 const tasksService = require('./task.service');
 
 router.route('/').get(async (req, res) => {
   try {
     const tasks = await tasksService.getAll(req.params.boardId);
 
-    res.json(tasks);
+    res.status(200).json(tasks);
   } catch (error) {
     throw new Error('Something goes wrong! ', error.message);
   }
@@ -15,7 +16,7 @@ router.route('/:taskId').get(async (req, res) => {
   try {
     const task = await tasksService.get(req.params.boardId, req.params.taskId);
 
-    res.json(task);
+    res.status(200).json(task);
   } catch (error) {
     throw new Error('Something goes wrong! ', error.message);
   }
@@ -24,10 +25,9 @@ router.route('/:taskId').get(async (req, res) => {
 router.route('/:taskId').delete(async (req, res) => {
   const tasks = await tasksService.del(req.params.boardId, req.params.taskId);
 
-  res.json(tasks);
+  res.status(200).json(tasks);
 });
 
-// ! ПЕРЕДЕЛАТЬ
 router.route('/:taskId').put(async (req, res) => {
   const taskFragment = {
     title: req.body.title,
@@ -38,21 +38,29 @@ router.route('/:taskId').put(async (req, res) => {
     columnId: req.body.columnId
   };
 
-  // eslint-disable-next-line no-undef
-  const board = await boardsService.get(req.params.boardId);
-  const { tasks } = board;
-  const task = await tasks.filter(el => el.id === req.params.taskId);
+  const board = await tasksService.update(
+    req.params.boardId,
+    req.params.taskId,
+    taskFragment
+  );
 
-  res.json(Object.assign(...task, taskFragment));
+  res.status(200).json(board);
 });
 
-// router.route('/:id').put(async (req, res) => {
-//   const user = await usersService.update(req.params.id, {
-//     login: req.body.login,
-//     password: req.body.password,
-//     name: req.body.name
-//   });
-//   res.json(User.toResponse(user));
+// router.route('/').post(async (req, res) => {
+//   const task = await tasksService.create(
+//     req.params.boardId,
+//     new Task({
+//       boardId: req.params.boardId,
+//       title: req.body.title,
+//       order: req.body.order,
+//       description: req.body.description,
+//       userId: req.body.userId,
+//       columnId: req.body.columnId
+//     })
+//   );
+
+//   res.status(200).json(task);
 // });
 
 module.exports = router;

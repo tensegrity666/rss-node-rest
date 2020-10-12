@@ -5,16 +5,16 @@ const boardsService = require('./board.service');
 router.route('/').get(async (req, res) => {
   const boards = await boardsService.getAll();
 
-  res.json(boards);
+  res.status(200).json(boards);
 });
 
 router.route('/:boardId').get(async (req, res) => {
   try {
     const board = await boardsService.get(req.params.boardId);
 
-    res.json(board);
+    res.status(200).json(board);
   } catch (error) {
-    throw new Error('Something goes wrong! ', error);
+    throw new Error('Something goes wrong! ', error.message);
   }
 });
 
@@ -27,13 +27,13 @@ router.route('/').post(async (req, res) => {
     })
   );
 
-  res.json(board);
+  res.status(200).json(board);
 });
 
 router.route('/:boardId').delete(async (req, res) => {
   const boards = await boardsService.del(req.params.boardId);
 
-  res.json(boards);
+  res.status(200).json(boards);
 });
 
 router.route('/:boardId').put(async (req, res) => {
@@ -42,7 +42,7 @@ router.route('/:boardId').put(async (req, res) => {
     columns: req.body.columns
   });
 
-  res.json(board);
+  res.status(200).json(board);
 });
 
 module.exports = router;

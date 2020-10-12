@@ -2,8 +2,8 @@ const {
   getAllUsers,
   getUser,
   createUser,
-  deleteUser,
-  updateUser
+  updateUser,
+  deleteUser
 } = require('../../common/db-users');
 
 const getAll = async () => await getAllUsers();
@@ -17,9 +17,7 @@ const get = async id => {
 };
 
 const create = async user => await createUser(user);
-
-const del = async id => await deleteUser(id);
-
 const update = async (id, value) => await updateUser(id, value);
+const del = async id => await deleteUser(id);
 
 module.exports = { getAll, get, create, del, update };

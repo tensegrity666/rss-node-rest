@@ -2,8 +2,8 @@ const {
   getAllBoards,
   getBoard,
   createBoard,
-  deleteBoard,
-  updateBoard
+  updateBoard,
+  deleteBoard
 } = require('../../common/db-boards');
 
 const getAll = async () => await getAllBoards();
@@ -17,9 +17,7 @@ const get = async id => {
 };
 
 const create = async board => await createBoard(board);
-
-const del = async id => await deleteBoard(id);
-
 const update = async (id, value) => await updateBoard(id, value);
+const del = async id => await deleteBoard(id);
 
 module.exports = { getAll, get, create, del, update };
