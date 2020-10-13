@@ -17,7 +17,8 @@ const get = async id => {
 };
 
 const create = async board => await createBoard(board);
-const update = async (id, value) => await updateBoard(id, value);
+const update = async ({ id, updatedBoard }) =>
+  await updateBoard({ id, updatedBoard });
 const del = async id => await deleteBoard(id);
 
 module.exports = { getAll, get, create, del, update };

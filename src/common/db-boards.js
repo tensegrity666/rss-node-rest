@@ -8,7 +8,7 @@ const board4 = {
   title: 'VasyaBoard'
 };
 
-let boardsDB = [board1, board2, board3, board4];
+const boardsDB = [board1, board2, board3, board4];
 
 const getAllBoards = () => [...boardsDB];
 
@@ -21,23 +21,21 @@ const createBoard = board => {
 };
 
 const deleteBoard = id => {
-  const board = getBoard(id);
-  const index = boardsDB.indexOf(board);
-  const boardsBefore = boardsDB.slice(0, index);
-  const boardsAfter = boardsDB.slice(index + 1);
-  boardsDB = [...boardsBefore, ...boardsAfter];
+  const indexBoard = boardsDB.findIndex(item => item.id === id);
 
-  return boardsDB;
+  boardsDB.splice(indexBoard, 1);
+
+  return true;
 };
 
-const updateBoard = (id, value) => {
-  const board = getBoard(id);
-  const index = boardsDB.indexOf(board);
-  return (boardsDB[index] = {
-    id,
-    title: value.title,
-    columns: value.columns
-  });
+const updateBoard = props => {
+  const { id, updatedBoard } = props;
+
+  const userIndex = boardsDB.findIndex(item => item.id === id);
+
+  boardsDB.splice(userIndex, 1, updatedBoard);
+
+  return getBoard(id);
 };
 
 module.exports = {

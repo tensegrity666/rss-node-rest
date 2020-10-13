@@ -13,53 +13,94 @@ const task5 = new Task({
   userId: '123',
   boardId: '12345'
 });
-const task6 = {
+const task6 = new Task({
   id: 't4',
   boardId: '12345',
   title: 'Task6',
+  userId: '123',
   description: 'Sixth task',
   order: 4
+});
+
+const tasksDB = [task1, task2, task3, task4, task5, task6];
+
+const getAllTasks = async boardId => {
+  const tasks = await tasksDB.filter(task => task.boardId === boardId);
+
+  return tasks;
 };
 
-let tasksDB = [task1, task2, task3, task4, task5, task6];
+const getTask = async props => {
+  const { boardId, taskId } = props;
 
-const getAllTasks = boardId => [
-  tasksDB.filter(task => task.boardId === boardId)
-];
-
-const getTask = (boardId, taskId) => {
-  const tasks = tasksDB.filter(task => task.boardId === boardId);
+  const tasks = await getAllTasks(boardId);
   const task = tasks.filter(element => element.id === taskId);
 
-  return task;
+  return task[0];
 };
 
-const createTask = (boardId, task) => {
-  tasksDB.push(task);
+const createTask = async newTask => {
+  tasksDB.push(newTask);
 
-  return getTask(boardId, task.id);
+  const nTask = await getTask({ taskId: newTask.id, boardId: newTask.boardId });
+
+  return nTask;
 };
 
-const deleteTask = (boardId, taskId) => {
-  const board = getAllTasks(boardId).flat();
+const deleteTask = async props => {
+  const { boardId, taskId } = props;
 
-  const task = board.filter(element => element.id === taskId)[0];
-  task.boardId = null;
+  const taskIndex = await tasksDB.findIndex(
+    item => item.id === taskId && item.boardId === boardId
+  );
 
-  const index = tasksDB.indexOf(task);
-  const boardsBefore = tasksDB.slice(0, index);
-  const boardsAfter = tasksDB.slice(index + 1);
-  tasksDB = [...boardsBefore, ...boardsAfter];
+  tasksDB.splice(taskIndex, 1);
 
-  return getAllTasks(boardId).flat()[0];
+  return true;
 };
 
-const updateTask = (boardId, taskId, value) => {
-  const task = getTask(boardId, taskId);
+const updateTask = async props => {
+  const { taskId, boardId, updatedTask } = props;
 
-  const updated = Object.assign(...task, value);
+  const taskIndex = tasksDB.findIndex(
+    item => item.id === taskId && item.boardId === boardId
+  );
 
-  return updated;
+  try {
+    tasksDB.splice(taskIndex, 1, updatedTask);
+
+    return getTask(boardId, taskId);
+  } catch (error) {
+    throw new Error(
+      `Error occured while updating task ${taskId}:\n ${error.message}`
+    );
+  }
 };
 
-module.exports = { getAllTasks, getTask, deleteTask, createTask, updateTask };
+const resetConnectionsByUserId = id => {
+  tasksDB.forEach(item => {
+    if (item.userId === id) {
+      item.userId = null;
+    }
+  });
+
+  return true;
+};
+
+const resetConnectionsByBoardId = id => {
+  const updatedTasks = tasksDB.filter(item => item.boardId !== id);
+
+  tasksDB.splice(0, tasksDB.length, updatedTasks);
+
+  return true;
+};
+
+module.exports = {
+  getAllTasks,
+  getTask,
+  deleteTask,
+  createTask,
+  updateTask,
+  resetConnectionsByUserId,
+  resetConnectionsByBoardId
+};

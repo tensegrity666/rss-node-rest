@@ -3,9 +3,9 @@ const User = require('../resources/users/user.model');
 const user1 = new User();
 const user2 = new User();
 const user3 = new User();
-const user4 = { id: '123', name: 'Vasya' };
+const user4 = new User({ id: '123' });
 
-let usersDB = [user1, user2, user3, user4];
+const usersDB = [user1, user2, user3, user4];
 
 const getAllUsers = () => [...usersDB];
 
@@ -17,21 +17,34 @@ const createUser = user => {
   return getUser(user.id);
 };
 
-const deleteUser = id => {
-  const user = getUser(id);
-  const index = usersDB.indexOf(user);
-  const usersBefore = usersDB.slice(0, index);
-  const usersAfter = usersDB.slice(index + 1);
-  usersDB = [...usersBefore, ...usersAfter];
+const deleteUser = async id => {
+  const userIndex = await usersDB.findIndex(item => item.id === id);
 
-  return usersDB;
+  try {
+    if (userIndex !== -1) {
+      usersDB.splice(userIndex, 1);
+
+      return true;
+    }
+
+    return false;
+  } catch (error) {
+    throw new Error(`Error occured while deleting user ${id}`);
+  }
 };
 
-const updateUser = (id, value) => {
-  const user = getUser(id);
-  const index = usersDB.indexOf(user);
+const updateUser = async props => {
+  const { id, updatedUser } = props;
 
-  return (usersDB[index] = { id, user, ...value });
+  const userIndex = await usersDB.findIndex(item => item.id === id);
+
+  try {
+    usersDB.splice(userIndex, 1, updatedUser);
+
+    return getUser(id);
+  } catch (error) {
+    throw new Error(`Error occured while updating user ${id}`);
+  }
 };
 
 module.exports = { getAllUsers, getUser, createUser, deleteUser, updateUser };

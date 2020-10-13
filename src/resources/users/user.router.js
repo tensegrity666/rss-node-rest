@@ -28,16 +28,26 @@ router.route('/').post(async (req, res) => {
 });
 
 router.route('/:userId').delete(async (req, res) => {
-  const users = await usersService.del(req.params.userId);
-  res.status(200).json(users.map(User.toResponse));
+  const result = await usersService.del(req.params.userId);
+
+  if (result) {
+    res.status(204).json('The user has been deleted');
+  }
+
+  res.status(404).send('User not found');
 });
 
 router.route('/:userId').put(async (req, res) => {
-  const user = await usersService.update(req.params.userId, {
+  const id = req.params.userId;
+
+  const updatedUser = new User({
+    id,
+    name: req.body.name,
     login: req.body.login,
-    password: req.body.password,
-    name: req.body.name
+    password: req.body.password
   });
+
+  const user = await usersService.update({ id, updatedUser });
   res.status(200).json(User.toResponse(user));
 });
 

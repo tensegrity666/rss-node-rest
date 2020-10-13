@@ -3,14 +3,17 @@ const {
   getTask,
   createTask,
   updateTask,
-  deleteTask
+  deleteTask,
+  resetConnectionsByUserId,
+  resetConnectionsByBoardId
 } = require('../../common/db-tasks');
 
 const getAll = async id => await getAllTasks(id);
-const get = async (boardId, taskId) => await getTask(boardId, taskId);
-const create = async (boardId, task) => await createTask(boardId, task);
-const update = async (boardId, taskId, value) =>
-  await updateTask(boardId, taskId, value);
-const del = async (boardId, taskId) => await deleteTask(boardId, taskId);
+const get = async ({ boardId, taskId }) => await getTask({ boardId, taskId });
+const create = async newTask => await createTask(newTask);
+const update = async props => await updateTask(props);
+const del = async props => await deleteTask(props);
+const reset = async id => await resetConnectionsByUserId(id);
+const resetByBoard = async id => await resetConnectionsByBoardId(id);
 
-module.exports = { getAll, get, del, create, update };
+module.exports = { getAll, get, del, create, update, reset, resetByBoard };

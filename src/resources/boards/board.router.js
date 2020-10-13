@@ -31,16 +31,25 @@ router.route('/').post(async (req, res) => {
 });
 
 router.route('/:boardId').delete(async (req, res) => {
-  const boards = await boardsService.del(req.params.boardId);
+  const result = await boardsService.del(req.params.boardId);
 
-  res.status(200).json(boards);
+  if (result) {
+    res.status(204).send('The board has been deleted');
+  }
+
+  res.status(404).send('Board not found');
 });
 
 router.route('/:boardId').put(async (req, res) => {
-  const board = await boardsService.update(req.params.boardId, {
+  const id = req.params.boardId;
+
+  const updatedBoard = new Board({
+    id,
     title: req.body.title,
     columns: req.body.columns
   });
+
+  const board = await boardsService.update({ id, updatedBoard });
 
   res.status(200).json(board);
 });
