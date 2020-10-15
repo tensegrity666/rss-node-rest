@@ -4,7 +4,7 @@ const {
   createUser,
   updateUser,
   deleteUser
-} = require('../../common/db-users');
+} = require('../../common/db/db-users');
 
 const getAll = async () => await getAllUsers();
 

@@ -6,7 +6,7 @@ const {
   deleteTask,
   resetConnectionsByUserId,
   resetConnectionsByBoardId
-} = require('../../common/db-tasks');
+} = require('../../common/db/db-tasks');
 
 const getAll = async id => await getAllTasks(id);
 const get = async ({ boardId, taskId }) => await getTask({ boardId, taskId });

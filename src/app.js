@@ -1,13 +1,19 @@
 const express = require('express');
-const swaggerUI = require('swagger-ui-express');
 const path = require('path');
+const morgan = require('morgan');
+const winston = require('./config/winston');
+
+const swaggerUI = require('swagger-ui-express');
 const YAML = require('yamljs');
 const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
+
 const userRouter = require('./resources/users/user.router');
 const boardRouter = require('./resources/boards/board.router');
 const taskRouter = require('./resources/tasks/task.router');
 
 const app = express();
+
+app.use(morgan('combined', { stream: winston.stream }));
 app.use(express.json());
 app.use('/doc', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 

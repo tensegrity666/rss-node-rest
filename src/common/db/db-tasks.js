@@ -1,4 +1,4 @@
-const Task = require('../resources/tasks/task.model');
+const Task = require('../../resources/tasks/task.model');
 
 const task1 = new Task({ title: 'Some title', boardId: 'b2' });
 const task2 = new Task({ order: 2 });

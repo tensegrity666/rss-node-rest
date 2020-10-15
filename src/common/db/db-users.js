@@ -1,4 +1,4 @@
-const User = require('../resources/users/user.model');
+const User = require('../../resources/users/user.model');
 
 const user1 = new User();
 const user2 = new User();

@@ -1,4 +1,4 @@
-const Board = require('../resources/boards/board.model');
+const Board = require('../../resources/boards/board.model');
 
 const board1 = new Board({ title: 'First board' });
 const board2 = { id: 'b2', title: 'SECOND board' };
