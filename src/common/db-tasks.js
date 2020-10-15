@@ -42,9 +42,9 @@ const getTask = async props => {
 const createTask = async newTask => {
   tasksDB.push(newTask);
 
-  const nTask = await getTask({ taskId: newTask.id, boardId: newTask.boardId });
+  const task = await getTask({ taskId: newTask.id, boardId: newTask.boardId });
 
-  return nTask;
+  return task;
 };
 
 const deleteTask = async props => {
@@ -54,6 +54,10 @@ const deleteTask = async props => {
     item => item.id === taskId && item.boardId === boardId
   );
 
+  if (taskIndex === -1) {
+    return false;
+  }
+
   tasksDB.splice(taskIndex, 1);
 
   return true;
@@ -62,19 +66,13 @@ const deleteTask = async props => {
 const updateTask = async props => {
   const { taskId, boardId, updatedTask } = props;
 
-  const taskIndex = tasksDB.findIndex(
+  const task = await tasksDB.find(
     item => item.id === taskId && item.boardId === boardId
   );
 
-  try {
-    tasksDB.splice(taskIndex, 1, updatedTask);
+  Object.assign(task, updatedTask);
 
-    return getTask(boardId, taskId);
-  } catch (error) {
-    throw new Error(
-      `Error occured while updating task ${taskId}:\n ${error.message}`
-    );
-  }
+  return task;
 };
 
 const resetConnectionsByUserId = id => {
