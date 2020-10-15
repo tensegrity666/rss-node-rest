@@ -4,7 +4,7 @@ const {
   createBoard,
   updateBoard,
   deleteBoard
-} = require('../../common/db-boards');
+} = require('../../common/db/db-boards');
 
 const getAll = async () => await getAllBoards();
 
