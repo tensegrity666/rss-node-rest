@@ -1,13 +1,14 @@
-/* eslint-disable no-process-exit */
-/* eslint-disable no-undef */
-
 const express = require('express');
 const path = require('path');
 const morgan = require('morgan');
-const winston = require('./config/winston');
-const logger = require('./common/utils/logger');
-const errorHandler = require('./common/utils/error-handler');
 const chalk = require('chalk');
+
+const { logger, errors } = require('./config/winston');
+const { logResponse, errResponse, parseBody } = require('./config/morgan');
+
+const errorHandler = require('./common/utils/error-handler');
+const rejectionHandler = require('./common/utils/rejection-handler');
+const exceptionHandler = require('./common/utils/exception-handler');
 // eslint-disable-next-line no-unused-vars
 const errorGenerator = require('./common/utils/error-generator');
 
@@ -21,7 +22,9 @@ const taskRouter = require('./resources/tasks/task.router');
 
 const app = express();
 
-app.use(morgan(':status :method :url', { stream: winston.stream }));
+morgan.token('body', parseBody);
+app.use(morgan(logResponse, { stream: logger.stream }));
+
 app.use(express.json());
 app.use('/doc', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
@@ -37,36 +40,28 @@ app.use('/users', userRouter);
 app.use('/boards', boardRouter);
 boardRouter.use('/:boardId/tasks', taskRouter);
 
-process.on('unhandledRejection', (reason = {}) => {
-  winston.error(`Unhandled rejection: ${reason.message || 'Promise rejected'}`);
-});
+process.on('unhandledRejection', rejectionHandler);
+process.on('uncaughtException', exceptionHandler);
 
-process.on('uncaughtException', (err, origin) => {
-  winston.error(`Caught exception: ${err} - Exception origin: ${origin}`);
+app.use(
+  morgan(errResponse, {
+    skip(req, res) {
+      return res.statusCode < 400;
+    },
+    stream: errors.stream
+  })
+);
 
-  console.log(
-    chalk.bgRed.white.bold(
-      '\nApp must be aborted because:\n' +
-        'https://nodejs.org/api/process.html#process_warning_using_uncaughtexception_correctly \n'
-    )
-  );
-});
-
-app.use(logger);
 app.use(errorHandler);
 
 // ! ERROR SAMPLES
 console.log(
   chalk.blueBright.bold(
-    '\nTo enable errors, uncomment lines below 58 in app.js\n'
+    '\nTo enable errors, uncomment lines below 59 in app.js\n'
   )
 );
 // errorGenerator();
-
-// uncaughtExceptionFunction(
-//   'This function will raise an error that will be logged, but will cause the application to crash'
-// );
-
+// uncaughtExceptionFunction();
 // throw Error('One more uncaught exception...');
 
 module.exports = app;
