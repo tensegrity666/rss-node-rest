@@ -5,7 +5,7 @@ const user2 = new User();
 const user3 = new User();
 const user4 = new User({ id: '123' });
 
-const usersDB = [user1, user2, user3, user4];
+let usersDB = [user1, user2, user3, user4];
 
 const getAllUsers = () => [...usersDB];
 
@@ -17,34 +17,22 @@ const createUser = user => {
   return getUser(user.id);
 };
 
-const deleteUser = async id => {
-  const userIndex = await usersDB.findIndex(item => item.id === id);
+const deleteUser = id => {
+  const userIndex = usersDB.findIndex(item => item.id === id);
 
-  try {
-    if (userIndex !== -1) {
-      usersDB.splice(userIndex, 1);
+  if (userIndex === -1) return false;
 
-      return true;
-    }
-
-    return false;
-  } catch (error) {
-    throw new Error(`Error occured while deleting user ${id}`);
-  }
+  usersDB = usersDB.filter(user => user.id !== id);
+  return true;
 };
 
-const updateUser = async props => {
-  const { id, updatedUser } = props;
+const updateUser = ({ id, updatedInfo }) => {
+  const userIndex = usersDB.findIndex(item => item.id === id);
 
-  const userIndex = await usersDB.findIndex(item => item.id === id);
+  if (userIndex === -1) return false;
 
-  try {
-    usersDB.splice(userIndex, 1, updatedUser);
-
-    return getUser(id);
-  } catch (error) {
-    throw new Error(`Error occured while updating user ${id}`);
-  }
+  usersDB.splice(userIndex, 1, updatedInfo);
+  return getUser(id);
 };
 
 module.exports = { getAllUsers, getUser, createUser, deleteUser, updateUser };

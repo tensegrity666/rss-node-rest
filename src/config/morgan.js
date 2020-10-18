@@ -5,7 +5,7 @@ const errResponse =
   ':status :remote-addr :remote-user :method :url HTTP/:http-version :status :res[content-length] - :response-time ms';
 
 const parseBody = req => {
-  if (req.method === 'POST') {
+  if (req.method === 'POST' || req.method === 'PUT') {
     return JSON.stringify(req.body);
   }
   return '';

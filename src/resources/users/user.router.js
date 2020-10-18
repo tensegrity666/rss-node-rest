@@ -4,51 +4,69 @@ const usersService = require('./user.service');
 
 router.route('/').get(async (req, res) => {
   const users = await usersService.getAll();
-  res.status(200).json(users.map(User.toResponse));
+  res.json(users.map(User.toResponse));
 });
 
 router.route('/:userId').get(async (req, res) => {
   try {
     const user = await usersService.get(req.params.userId);
-    res.status(200).json(User.toResponse(user));
+    res.json(User.toResponse(user));
   } catch (error) {
-    throw new Error('something goes wrong!');
+    throw new Error(`Something goes wrong: ${error.message}`);
   }
 });
 
 router.route('/').post(async (req, res) => {
-  const user = await usersService.create(
-    new User({
+  try {
+    const userInfo = {
       login: req.body.login,
       password: req.body.password,
       name: req.body.name
-    })
-  );
-  res.status(200).json(User.toResponse(user));
+    };
+
+    const user = await usersService.create(userInfo);
+
+    res.json(User.toResponse(user));
+  } catch (error) {
+    throw new Error(`Something goes wrong: ${error.message}`);
+  }
 });
 
 router.route('/:userId').delete(async (req, res) => {
-  const result = await usersService.del(req.params.userId);
+  try {
+    const result = await usersService.del(req.params.userId);
 
-  if (result) {
-    res.status(204).json('The user has been deleted');
+    if (!result) {
+      return res.status(404).send('Not found');
+    }
+
+    res.status(204).send('Deleted');
+  } catch (error) {
+    throw new Error(`Something goes wrong: ${error.message}`);
   }
-
-  res.status(404).send('User not found');
 });
 
 router.route('/:userId').put(async (req, res) => {
-  const id = req.params.userId;
+  try {
+    const id = req.params.userId;
 
-  const updatedUser = new User({
-    id,
-    name: req.body.name,
-    login: req.body.login,
-    password: req.body.password
-  });
+    const updatedInfo = {
+      id,
+      name: req.body.name,
+      login: req.body.login,
+      password: req.body.password
+    };
 
-  const user = await usersService.update({ id, updatedUser });
-  res.status(200).json(User.toResponse(user));
+    const user = await usersService.update({ id, updatedInfo });
+
+    if (!user) {
+      return res.status(400).send('Bad request');
+    }
+
+    res.json(User.toResponse(user));
+  } catch (error) {
+    throw new Error(`Something goes wrong: ${error.message}`);
+  }
 });
 
 module.exports = router;
