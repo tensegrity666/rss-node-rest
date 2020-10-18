@@ -11,34 +11,41 @@ const {
   simple,
   json,
   prettyPrint,
+  dateFormat,
   colorize
 } = format;
 const { NODE_ENV } = require('./config');
+
+const myFormat = printf(info => {
+  const formattedDate = info.timestamp.replace('T', ' ').replace('Z', '');
+  const statuscode = Number(info.message.substring(0, 3));
+  const message = info.message.substring(4, info.message.length);
+
+  return `${formattedDate}: [${Number.isNaN(statuscode) ? '-' : statuscode}] ${
+    Number.isNaN(statuscode) ? info.message : message
+  }`;
+});
 
 const logger = createLogger({
   transports: [
     new transports.File({
       filename: './logs/combined.log',
-      level: 'info',
-      format: combine(
-        timestamp(),
-        printf(info => `${info.timestamp} [${info.level}]: ${info.message}`)
-      )
-    }),
+      maxsize: 5242880,
+      maxFiles: 10,
+      level: global.loglevel || 'info',
+      format: combine(timestamp({ format: 'YYYY/MM/DD HH:mm:ss' }), myFormat)
+    })
+  ]
+});
+
+const errors = createLogger({
+  transports: [
     new transports.File({
       filename: './logs/error.log',
+      maxsize: 5242880,
+      maxFiles: 10,
       level: 'error',
-      format: combine(
-        timestamp(),
-        printf(info => `${info.timestamp} [${info.level}]: ${info.message}`)
-      )
-    }),
-    new transports.Http({
-      level: 'warn',
-      format: combine(
-        timestamp(),
-        printf(info => `${info.timestamp} [${info.level}]: ${info.message}`)
-      )
+      format: combine(timestamp({ format: 'YYYY/MM/DD HH:mm:ss' }), myFormat)
     })
   ]
 });
@@ -47,22 +54,24 @@ if (NODE_ENV !== 'production') {
   logger.add(
     new winston.transports.Console({
       level: 'debug',
-      format: combine(colorize(), prettyPrint(), simple())
+      format: combine(colorize(), simple())
     })
   );
 }
 
-logger.exitOnError = false;
+errors.exceptions.handle();
+errors.exitOnError = false;
 
 logger.stream = {
   write(message, encoding) {
-    if (message !== undefined) {
-      message.substring(0, 3) === '500'
-        ? logger.error('Internal Server Error')
-        : logger.info(message);
-    }
-    logger.info('Error');
+    logger.info(message);
   }
 };
 
-module.exports = logger;
+errors.stream = {
+  write(message, encoding) {
+    errors.error(message);
+  }
+};
+
+module.exports = { logger, errors };
