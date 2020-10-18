@@ -22,11 +22,19 @@ const taskRouter = require('./resources/tasks/task.router');
 
 const app = express();
 
-morgan.token('body', parseBody);
-app.use(morgan(logResponse, { stream: logger.stream }));
-
 app.use(express.json());
 app.use('/doc', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+
+morgan.token('body', parseBody);
+app.use(
+  morgan(errResponse, {
+    skip(req, res) {
+      return res.statusCode < 400;
+    },
+    stream: errors.stream
+  })
+);
+app.use(morgan(logResponse, { stream: logger.stream }));
 
 app.use('/', (req, res, next) => {
   if (req.originalUrl === '/') {
@@ -42,15 +50,6 @@ boardRouter.use('/:boardId/tasks', taskRouter);
 
 process.on('unhandledRejection', rejectionHandler);
 process.on('uncaughtException', exceptionHandler);
-
-app.use(
-  morgan(errResponse, {
-    skip(req, res) {
-      return res.statusCode < 400;
-    },
-    stream: errors.stream
-  })
-);
 
 app.use(errorHandler);
 
