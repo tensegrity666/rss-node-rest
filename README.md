@@ -1,10 +1,15 @@
 ### TASK 2 - EXPRESS REST SERVICE
-# Results:
-__`Tests:       3 failed, 14 passed, 17 total`__<br>
-_Not implemented: removing tasks, which are related with user and board_
-
-
 - - -
+### TASK 3 - LOGGING & ERROR HANDLING
+# Results:
+__`Tests:       17 passed, 17 total`__<br>
+_Couple of tests fail only if the nodemon has not rebooted yet!_
+
+#### Logfiles you can find in `./logs`<br>
+`error.log` contains errors with levels > 500 (server errors).
+
+#### To enable errors, uncomment lines below 56 in app.js
+- - - 
 # RS School REST service
 
 ## Prerequisites
