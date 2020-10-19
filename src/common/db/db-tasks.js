@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 const Task = require('../../resources/tasks/task.model');
 
 const task1 = new Task({ title: 'Some title', boardId: 'b2' });
@@ -22,7 +23,7 @@ const task6 = new Task({
   order: 4
 });
 
-const tasksDB = [task1, task2, task3, task4, task5, task6];
+let tasksDB = [task1, task2, task3, task4, task5, task6];
 
 const getAllTasks = async boardId => {
   const tasks = await tasksDB.filter(task => task.boardId === boardId);
@@ -47,18 +48,10 @@ const createTask = async newTask => {
   return task;
 };
 
-const deleteTask = async props => {
-  const { boardId, taskId } = props;
-
-  const taskIndex = await tasksDB.findIndex(
+const deleteTask = ({ boardId, taskId }) => {
+  tasksDB = tasksDB.filter(
     item => item.id === taskId && item.boardId === boardId
   );
-
-  if (taskIndex === -1) {
-    return false;
-  }
-
-  tasksDB.splice(taskIndex, 1);
 
   return true;
 };
@@ -76,21 +69,13 @@ const updateTask = async props => {
 };
 
 const resetConnectionsByUserId = id => {
-  tasksDB.forEach(item => {
-    if (item.userId === id) {
-      item.userId = null;
-    }
-  });
-
-  return true;
+  tasksDB = tasksDB.map(task =>
+    task.userId === id ? { ...task, userId: null } : task
+  );
 };
 
 const resetConnectionsByBoardId = id => {
-  const updatedTasks = tasksDB.filter(item => item.boardId !== id);
-
-  tasksDB.splice(0, tasksDB.length, updatedTasks);
-
-  return true;
+  tasksDB = tasksDB.filter(item => item.boardId !== id);
 };
 
 module.exports = {

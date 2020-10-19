@@ -33,12 +33,13 @@ router.route('/:taskId').delete(async (req, res) => {
       taskId: req.params.id
     };
 
-    const isDeleted = await tasksService.del(props);
+    const tasks = await tasksService.del(props);
 
-    if (isDeleted) {
-      return res.status(204).send('The task has been deleted');
+    if (!tasks) {
+      return res.status(404).send('Not found');
     }
-    res.status(404).send('Not found');
+
+    res.status(204).send('The task has been deleted');
   } catch (error) {
     throw new Error('Error while deleting\n', error.message);
   }

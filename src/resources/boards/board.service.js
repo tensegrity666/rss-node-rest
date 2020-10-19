@@ -5,11 +5,9 @@ const getAll = () => boardsRepo.getAll();
 const get = id => boardsRepo.get(id);
 const create = board => boardsRepo.create(board);
 
-const del = id => {
-  tasksRepo.resetByBoard(id);
-  const result = boardsRepo.del(id);
-
-  return result;
+const del = async id => {
+  await tasksRepo.resetByBoard(id);
+  return await boardsRepo.del(id);
 };
 
 const update = ({ id, updatedBoard }) =>
