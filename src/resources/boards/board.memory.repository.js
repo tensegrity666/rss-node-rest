@@ -1,24 +1,39 @@
-const {
+const DB = require('../../common/db');
+
+const getAllBoards = () => [...DB.boards];
+
+const getBoard = id => DB.boards.filter(board => board.id === id)[0];
+
+const createBoard = newBoard => {
+  DB.boards.push(newBoard);
+
+  return getBoard(newBoard.id);
+};
+
+const deleteBoard = id => {
+  const boardIndex = DB.boards.findIndex(board => board.id === id);
+
+  if (boardIndex === -1) return false;
+
+  DB.boards = DB.boards.filter(board => board.id !== id);
+
+  return true;
+};
+
+const updateBoard = ({ id, updatedInfo }) => {
+  const boardIndex = DB.boards.findIndex(board => board.id === id);
+
+  if (boardIndex === -1) return false;
+
+  DB.boards.splice(boardIndex, 1, updatedInfo);
+
+  return getBoard(id);
+};
+
+module.exports = {
   getAllBoards,
   getBoard,
   createBoard,
-  updateBoard,
-  deleteBoard
-} = require('../../common/db/db-boards');
-
-const getAll = async () => await getAllBoards();
-
-const get = async id => {
-  const board = await getBoard(id);
-
-  if (board === undefined) throw new Error(`Board with id:${id} not found!`);
-
-  return board;
+  deleteBoard,
+  updateBoard
 };
-
-const create = async board => await createBoard(board);
-const update = async ({ id, updatedBoard }) =>
-  await updateBoard({ id, updatedBoard });
-const del = async id => await deleteBoard(id);
-
-module.exports = { getAll, get, create, del, update };

@@ -1,16 +1,18 @@
 const boardsRepo = require('./board.memory.repository');
 const tasksRepo = require('../tasks/task.memory.repository');
 
-const getAll = () => boardsRepo.getAll();
-const get = id => boardsRepo.get(id);
-const create = board => boardsRepo.create(board);
+const Board = require('./board.model');
 
-const del = async id => {
-  await tasksRepo.resetByBoard(id);
-  return await boardsRepo.del(id);
+const getAll = () => boardsRepo.getAllBoards();
+const get = id => boardsRepo.getBoard(id);
+const create = boardInfo => boardsRepo.createBoard(new Board(boardInfo));
+
+const del = id => {
+  tasksRepo.resetConnectionsByBoardId(id);
+  return boardsRepo.deleteBoard(id);
 };
 
-const update = ({ id, updatedBoard }) =>
-  boardsRepo.update({ id, updatedBoard });
+const update = ({ id, updatedInfo }) =>
+  boardsRepo.updateBoard({ id, updatedInfo });
 
 module.exports = { getAll, get, create, del, update };

@@ -7,9 +7,9 @@ const getAll = () => usersRepo.getAllUsers();
 const get = id => usersRepo.getUser(id);
 const create = userInfo => usersRepo.createUser(new User(userInfo));
 
-const del = async id => {
-  await tasksRepo.reset(id);
-  return await usersRepo.deleteUser(id);
+const del = id => {
+  tasksRepo.resetConnectionsByUserId(id);
+  return usersRepo.deleteUser(id);
 };
 
 const update = ({ id, updatedInfo }) =>
