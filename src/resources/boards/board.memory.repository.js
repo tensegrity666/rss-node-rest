@@ -1,6 +1,6 @@
 const DB = require('../../common/db');
 
-const getAllBoards = () => [...DB.boards];
+const getAllBoards = () => DB.boards;
 
 const getBoard = id => DB.boards.filter(board => board.id === id)[0];
 
@@ -15,7 +15,7 @@ const deleteBoard = id => {
 
   if (boardIndex === -1) return false;
 
-  DB.boards = DB.boards.filter(board => board.id !== id);
+  DB.boards.splice(boardIndex, 1);
 
   return true;
 };

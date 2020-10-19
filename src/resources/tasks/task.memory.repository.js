@@ -1,11 +1,19 @@
 const DB = require('../../common/db');
 
-const getAllTasks = boardId =>
-  DB.tasks.filter(task => task.boardId === boardId);
+const getAllTasks = boardId => {
+  const boardIndex = DB.tasks.findIndex(task => task.boardId === boardId);
+
+  if (boardIndex === -1) return false;
+
+  return DB.tasks.filter(task => task.boardId === boardId);
+};
 
 const getTask = ({ boardId, taskId }) => {
-  const tasks = getAllTasks(boardId);
+  const taskIndex = DB.tasks.findIndex(task => task.id === taskId);
 
+  if (taskIndex === -1) return false;
+
+  const tasks = getAllTasks(boardId);
   return tasks.filter(task => task.id === taskId)[0];
 };
 
@@ -16,7 +24,6 @@ const createTask = newTask => {
 };
 
 const deleteTask = ({ boardId, taskId }) => {
-  // DB.tasks = DB.tasks.filter(task => task.id !== taskId);
   const tasks = getAllTasks(boardId);
 
   const taskIndex = tasks.findIndex(task => task.id === taskId);
@@ -39,9 +46,11 @@ const updateTask = ({ taskId, boardId, updatedInfo }) => {
 };
 
 const resetConnectionsByUserId = id => {
-  DB.tasks = DB.tasks.map(task =>
+  const resetedTasks = DB.tasks.map(task =>
     task.userId === id ? { ...task, userId: null } : task
   );
+
+  DB.tasks = [...resetedTasks];
 };
 
 const resetConnectionsByBoardId = boardId => {

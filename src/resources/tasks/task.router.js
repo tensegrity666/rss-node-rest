@@ -51,9 +51,6 @@ router.route('/:taskId').put(async (req, res) => {
   try {
     const { boardId, taskId } = req.params;
 
-    console.log(boardId);
-    console.log(taskId);
-
     const updatedInfo = {
       id: taskId,
       boardId,
@@ -63,7 +60,7 @@ router.route('/:taskId').put(async (req, res) => {
     const task = await tasksService.update({ taskId, boardId, updatedInfo });
 
     if (!task) {
-      return res.status(400).send('Bad request');
+      return res.status(404).send('Not found');
     }
 
     res.json(task);
