@@ -1,16 +1,33 @@
-const {
-  getAllUsers,
-  getUser,
-  createUser,
-  updateUser,
-  deleteUser
-} = require('../../common/db/db-users');
+const DB = require('../../common/db');
 
-const getAll = async () => await getAllUsers();
-const get = async id => await getUser(id);
-const create = async userInfo => await createUser(userInfo);
-const update = async ({ id, updatedInfo }) =>
-  await updateUser({ id, updatedInfo });
-const del = async id => await deleteUser(id);
+const getAllUsers = () => [...DB.users];
 
-module.exports = { getAll, get, create, del, update };
+const getUser = id => DB.users.filter(user => user.id === id)[0];
+
+const createUser = user => {
+  DB.users.push(user);
+
+  return getUser(user.id);
+};
+
+const deleteUser = id => {
+  const userIndex = DB.users.findIndex(user => user.id === id);
+
+  if (userIndex === -1) return false;
+
+  DB.users = DB.users.filter(user => user.id !== id);
+
+  return true;
+};
+
+const updateUser = ({ id, updatedInfo }) => {
+  const userIndex = DB.users.findIndex(user => user.id === id);
+
+  if (userIndex === -1) return false;
+
+  DB.users.splice(userIndex, 1, updatedInfo);
+
+  return getUser(id);
+};
+
+module.exports = { getAllUsers, getUser, createUser, deleteUser, updateUser };

@@ -31,13 +31,17 @@ router.route('/').post(async (req, res) => {
 });
 
 router.route('/:boardId').delete(async (req, res) => {
-  const result = await boardsService.del(req.params.boardId);
+  try {
+    const result = await boardsService.del(req.params.boardId);
 
-  if (result) {
-    res.status(204).send('The board has been deleted');
+    if (!result) {
+      return res.status(404).send('Not found');
+    }
+
+    res.status(204).send('Deleted');
+  } catch (error) {
+    throw new Error(`Something goes wrong: ${error.message}`);
   }
-
-  res.status(404).send('Board not found');
 });
 
 router.route('/:boardId').put(async (req, res) => {
