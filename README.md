@@ -6,7 +6,7 @@ __`Tests:       17 passed, 17 total`__<br>
 _Couple of tests can fail only if the nodemon has not rebooted yet!_
 
 #### Logfiles you can find in `./logs`<br>
-`error.log` contains errors with levels > 500 (server errors).
+`error.log` contains errors with levels > 400 (all errors).
 
 #### To enable errors, uncomment lines below 56 in app.js
 - - - 
