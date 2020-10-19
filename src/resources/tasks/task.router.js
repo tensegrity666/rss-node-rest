@@ -5,64 +5,70 @@ router.route('/').get(async (req, res) => {
   try {
     const tasks = await tasksService.getAll(req.params.boardId);
 
+    if (!tasks) {
+      return res.status(404).send('Not found');
+    }
+
     res.json(tasks);
   } catch (error) {
-    throw new Error('Something wrong\n', error.message);
+    throw new Error(`Something goes wrong: ${error.message}`);
   }
 });
 
 router.route('/:taskId').get(async (req, res) => {
   try {
-    const props = {
-      boardId: req.params.boardId,
-      taskId: req.params.taskId
-    };
+    const { boardId, taskId } = req.params;
 
-    const task = await tasksService.get(props);
+    const task = await tasksService.get({ boardId, taskId });
+
+    if (!task) {
+      return res.status(404).send('Not found');
+    }
 
     return res.json(task);
   } catch (error) {
-    throw new Error('Something wrong\n', error.message);
+    throw new Error(`Something goes wrong: ${error.message}`);
   }
 });
 
 router.route('/:taskId').delete(async (req, res) => {
   try {
-    const props = {
-      boardId: req.params.boardId,
-      taskId: req.params.id
-    };
+    const { boardId, taskId } = req.params;
 
-    const tasks = await tasksService.del(props);
+    const result = await tasksService.del({ boardId, taskId });
 
-    if (!tasks) {
+    if (!result) {
       return res.status(404).send('Not found');
     }
 
-    res.status(204).send('The task has been deleted');
+    res.status(204).send('Deleted');
   } catch (error) {
-    throw new Error('Error while deleting\n', error.message);
+    throw new Error(`Something goes wrong: ${error.message}`);
   }
 });
 
 router.route('/:taskId').put(async (req, res) => {
   try {
-    const props = {
-      boardId: req.params.boardId,
-      taskId: req.params.taskId,
-      updatedTask: req.body
+    const { boardId, taskId } = req.params;
+
+    console.log(boardId);
+    console.log(taskId);
+
+    const updatedInfo = {
+      id: taskId,
+      boardId,
+      ...req.body
     };
 
-    console.log(props.updatedTask);
+    const task = await tasksService.update({ taskId, boardId, updatedInfo });
 
-    const task = await tasksService.update(props);
-
-    if (task !== undefined) {
-      return res.json(task);
+    if (!task) {
+      return res.status(400).send('Bad request');
     }
-    res.status(404).send('Not found');
+
+    res.json(task);
   } catch (error) {
-    res.status(400).send(`Bad request\n ${error.message}`);
+    throw new Error(`Something goes wrong: ${error.message}`);
   }
 });
 
@@ -77,7 +83,7 @@ router.route('/').post(async (req, res) => {
 
     res.json(task);
   } catch (error) {
-    res.status(400).send(`Bad request\n ${error.message}`);
+    throw new Error(`Something goes wrong: ${error.message}`);
   }
 });
 

@@ -4,10 +4,10 @@ const getAllUsers = () => [...DB.users];
 
 const getUser = id => DB.users.filter(user => user.id === id)[0];
 
-const createUser = user => {
-  DB.users.push(user);
+const createUser = newUser => {
+  DB.users.push(newUser);
 
-  return getUser(user.id);
+  return getUser(newUser.id);
 };
 
 const deleteUser = id => {
