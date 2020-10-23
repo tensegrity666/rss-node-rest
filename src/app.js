@@ -1,7 +1,6 @@
 const express = require('express');
 const path = require('path');
 const morgan = require('morgan');
-const chalk = require('chalk');
 
 const { logger, errors } = require('./config/winston');
 const { logResponse, errResponse, parseBody } = require('./config/morgan');
@@ -48,17 +47,12 @@ app.use('/users', userRouter);
 app.use('/boards', boardRouter);
 boardRouter.use('/:boardId/tasks', taskRouter);
 
-process.on('unhandledRejection', rejectionHandler);
-process.on('uncaughtException', exceptionHandler);
+process
+  .on('unhandledRejection', rejectionHandler)
+  .on('uncaughtException', exceptionHandler);
 
 app.use(errorHandler);
 
-// ! ERROR SAMPLES
-console.log(
-  chalk.blueBright.bold(
-    '\nTo enable errors, uncomment lines below 59 in app.js\n'
-  )
-);
 // errorGenerator();
 // uncaughtExceptionFunction();
 // throw Error('One more uncaught exception...');
