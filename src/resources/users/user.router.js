@@ -1,5 +1,4 @@
 const router = require('express').Router();
-const User = require('./user.model');
 const usersService = require('./user.service');
 
 router.route('/').get(async (req, res) => {
@@ -10,7 +9,7 @@ router.route('/').get(async (req, res) => {
       return res.status(404).send('Not found');
     }
 
-    res.json(users.map(User.toResponse));
+    res.json(users);
   } catch (error) {
     throw new Error(`Something goes wrong: ${error.message}`);
   }
@@ -24,7 +23,7 @@ router.route('/:userId').get(async (req, res) => {
       return res.status(404).send('Not found');
     }
 
-    res.json(User.toResponse(user));
+    res.json(user);
   } catch (error) {
     throw new Error(`Something goes wrong: ${error.message}`);
   }
@@ -59,7 +58,7 @@ router.route('/:userId').put(async (req, res) => {
       return res.status(400).send('Bad request');
     }
 
-    res.json(User.toResponse(user));
+    res.json(user);
   } catch (error) {
     throw new Error(`Something goes wrong: ${error.message}`);
   }
@@ -77,7 +76,7 @@ router.route('/').post(async (req, res) => {
       return res.status(400).send('Bad request');
     }
 
-    res.json(User.toResponse(user));
+    res.json(user);
   } catch (error) {
     throw new Error(`Something goes wrong: ${error.message}`);
   }
