@@ -1,11 +1,21 @@
-const usersRepo = require('./user.memory.repository');
+const usersRepo = require('./user.repository');
 const tasksRepo = require('../tasks/task.memory.repository');
 
-const User = require('./user.model');
+const toResponse = user => {
+  const { id, name, login } = user;
+  return { id, name, login };
+};
 
-const getAll = () => usersRepo.getAllUsers();
-const get = id => usersRepo.getUser(id);
-const create = userInfo => usersRepo.createUser(new User(userInfo));
+const getAll = async () => {
+  const users = await usersRepo.getAllUsers();
+  return users.map(user => toResponse(user));
+};
+const get = async id => {
+  const user = await usersRepo.getUser(id);
+  return toResponse(user);
+};
+
+const create = userInfo => usersRepo.createUser(userInfo);
 
 const del = id => {
   tasksRepo.resetConnectionsByUserId(id);
