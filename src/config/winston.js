@@ -1,19 +1,6 @@
-/* eslint-disable no-unused-expressions */
-/* eslint-disable no-unused-vars */
-
 const winston = require('winston');
 const { createLogger, format, transports } = require('winston');
-const {
-  splat,
-  combine,
-  timestamp,
-  printf,
-  simple,
-  json,
-  prettyPrint,
-  dateFormat,
-  colorize
-} = format;
+const { combine, timestamp, printf, simple, colorize } = format;
 const { NODE_ENV } = require('./config');
 
 const myFormat = printf(info => {
@@ -32,7 +19,7 @@ const logger = createLogger({
       filename: './logs/combined.log',
       maxsize: 5242880,
       maxFiles: 10,
-      level: global.loglevel || 'info',
+      level: 'info',
       format: combine(timestamp({ format: 'YYYY/MM/DD HH:mm:ss' }), myFormat)
     })
   ]
@@ -53,23 +40,20 @@ const errors = createLogger({
 if (NODE_ENV !== 'production') {
   logger.add(
     new winston.transports.Console({
-      level: 'debug',
+      level: 'info',
       format: combine(colorize(), simple())
     })
   );
 }
 
-errors.exceptions.handle();
-errors.exitOnError = false;
-
 logger.stream = {
-  write(message, encoding) {
+  write(message) {
     logger.info(message);
   }
 };
 
 errors.stream = {
-  write(message, encoding) {
+  write(message) {
     errors.error(message);
   }
 };

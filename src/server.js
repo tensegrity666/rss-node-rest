@@ -14,7 +14,7 @@ const startApp = async () => {
     });
 
     app.listen(PORT, () =>
-      console.log(`App is running on http://localhost:${PORT}`)
+      logger.info(`App is running on http://localhost:${PORT}`)
     );
   } catch (error) {
     errors.error(error.message);
