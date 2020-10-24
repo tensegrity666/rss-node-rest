@@ -1,30 +1,34 @@
 const express = require('express');
 const path = require('path');
 const morgan = require('morgan');
+const cors = require('cors');
+const helmet = require('helmet');
+const YAML = require('yamljs');
 
 const { logger, errors } = require('./config/winston');
-const { logResponse, errResponse, parseBody } = require('./config/morgan');
+const { logResponse, errResponse } = require('./config/morgan');
+
+const swaggerUI = require('swagger-ui-express');
+const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
 
 const errorHandler = require('./common/utils/error-handler');
 const rejectionHandler = require('./common/utils/rejection-handler');
 const exceptionHandler = require('./common/utils/exception-handler');
-// eslint-disable-next-line no-unused-vars
-const errorGenerator = require('./common/utils/error-generator');
-
-const swaggerUI = require('swagger-ui-express');
-const YAML = require('yamljs');
-const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
 
 const userRouter = require('./resources/users/user.router');
 const boardRouter = require('./resources/boards/board.router');
 const taskRouter = require('./resources/tasks/task.router');
 
+require('express-async-errors');
+
 const app = express();
 
+app.use(helmet());
+app.use(cors());
 app.use(express.json());
+
 app.use('/doc', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
-morgan.token('body', parseBody);
 app.use(
   morgan(errResponse, {
     skip(req, res) {
@@ -52,9 +56,5 @@ process
   .on('uncaughtException', exceptionHandler);
 
 app.use(errorHandler);
-
-// errorGenerator();
-// uncaughtExceptionFunction();
-// throw Error('One more uncaught exception...');
 
 module.exports = app;
