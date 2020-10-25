@@ -3,7 +3,6 @@
 ### TASK 3 - LOGGING & ERROR HANDLING
 # Results:
 __`Tests:       17 passed, 17 total`__<br>
-_Couple of tests can fail only if the nodemon has not rebooted yet!_
 
 #### Logfiles you can find in `./logs`<br>
 `error.log` contains errors with levels > 400 (all errors).
@@ -12,6 +11,9 @@ _Couple of tests can fail only if the nodemon has not rebooted yet!_
 - - - 
 
 ### TASK 4 - MONGO DB
+# Results:
+__`Tests:       17 passed, 17 total`__<br>
+_The information on DB connection (connection string) is stored in __.env__ file_
 - - -
 # RS School REST service
 
