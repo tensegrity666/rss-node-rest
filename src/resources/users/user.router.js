@@ -1,85 +1,68 @@
 const router = require('express').Router();
 const usersService = require('./user.service');
+const { idScheme, userScheme } = require('../../common/utils/validator');
 
-router.route('/').get(async (req, res) => {
-  try {
-    const users = await usersService.getAll();
+router.get('/', async (req, res) => {
+  const users = await usersService.getAll();
 
-    if (!users) {
-      return res.status(404).send('Not found');
-    }
-
-    res.json(users);
-  } catch (error) {
-    throw new Error(`Something goes wrong: ${error.message}`);
-  }
+  res.json(users);
 });
 
-router.route('/:userId').get(async (req, res) => {
-  try {
-    const user = await usersService.get(req.params.userId);
+router.get('/:userId', async (req, res) => {
+  const { error } = idScheme.validate(req.params.userId);
+  if (error) return res.status(400).send(error.message);
 
-    if (!user) {
-      return res.status(404).send('Not found');
-    }
+  const user = await usersService.get(req.params.userId);
 
-    res.json(user);
-  } catch (error) {
-    throw new Error(`Something goes wrong: ${error.message}`);
+  if (!user) {
+    return res.sendStatus(404);
   }
+
+  res.json(user);
 });
 
-router.route('/:userId').delete(async (req, res) => {
-  try {
-    const result = await usersService.del(req.params.userId);
+router.delete('/:userId', async (req, res) => {
+  const { error } = idScheme.validate(req.params.userId);
+  if (error) return res.status(400).send(error.message);
 
-    if (!result) {
-      return res.status(404).send('Not found');
-    }
+  const result = await usersService.del(req.params.userId);
 
-    res.status(204).send('Deleted');
-  } catch (error) {
-    throw new Error(`Something goes wrong: ${error.message}`);
+  if (result.deletedCount === 0) {
+    return res.sendStatus(404);
   }
+
+  res.sendStatus(204);
 });
 
-router.route('/:userId').put(async (req, res) => {
-  try {
-    const id = req.params.userId;
+router.put('/:userId', async (req, res) => {
+  const updatedInfo = {
+    id: req.params.userId,
+    ...req.body
+  };
 
-    const updatedInfo = {
-      id,
-      ...req.body
-    };
+  const user = await usersService.update({
+    id: req.params.userId,
+    updatedInfo
+  });
 
-    const user = await usersService.update({ id, updatedInfo });
-
-    if (!user) {
-      return res.status(400).send('Bad request');
-    }
-
-    res.json(user);
-  } catch (error) {
-    throw new Error(`Something goes wrong: ${error.message}`);
+  if (!user) {
+    return res.sendStatus(400);
   }
+
+  res.json(user);
 });
 
-router.route('/').post(async (req, res) => {
-  try {
-    const userInfo = {
-      ...req.body
-    };
+router.post('/', async (req, res) => {
+  const { error } = userScheme.validate(req.body);
+  if (error) return res.status(400).send(error.message);
 
-    const user = await usersService.create(userInfo);
+  const user = await usersService.create(req.body);
 
-    if (!user) {
-      return res.status(400).send('Bad request');
-    }
-
-    res.json(user);
-  } catch (error) {
-    throw new Error(`Something goes wrong: ${error.message}`);
+  if (!user) {
+    return res.sendStatus(400);
   }
+
+  res.json(user);
 });
 
 module.exports = router;

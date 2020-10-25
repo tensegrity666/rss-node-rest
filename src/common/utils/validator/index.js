@@ -1,14 +1,19 @@
-const validator = (schema, property) => {
-  return (req, res, next) => {
-    const { error } = schema.validate(req[property]);
+const Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
 
-    if (error) {
-      res.status(property === 'body' ? '422' : '400').send(error.message);
-    } else {
-      // eslint-disable-next-line callback-return
-      next();
-    }
-  };
+module.exports = {
+  idScheme: Joi.objectId().required(),
+  userScheme: Joi.object()
+    .options({ abortEarly: false, allowUnknown: false })
+    .keys({
+      name: Joi.string()
+        .min(3)
+        .max(30)
+        .required(),
+      login: Joi.string()
+        .min(3)
+        .max(30)
+        .required(),
+      password: Joi.string().required()
+    })
 };
-
-module.exports = validator;
