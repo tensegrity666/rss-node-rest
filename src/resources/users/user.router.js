@@ -35,18 +35,18 @@ router.delete('/:userId', async (req, res) => {
 });
 
 router.put('/:userId', async (req, res) => {
-  const updatedInfo = {
-    id: req.params.userId,
-    ...req.body
-  };
+  const { error: idError } = idScheme.validate(req.params.userId);
+  const { error: bodyError } = userScheme.validate(req.body);
+  if (idError) return res.status(400).send(idError.message);
+  if (bodyError) return res.status(400).send(bodyError.message);
 
   const user = await usersService.update({
     id: req.params.userId,
-    updatedInfo
+    updatedInfo: req.body
   });
 
   if (!user) {
-    return res.sendStatus(400);
+    return res.sendStatus(404);
   }
 
   res.json(user);
@@ -57,10 +57,6 @@ router.post('/', async (req, res) => {
   if (error) return res.status(400).send(error.message);
 
   const user = await usersService.create(req.body);
-
-  if (!user) {
-    return res.sendStatus(400);
-  }
 
   res.json(user);
 });

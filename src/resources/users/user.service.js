@@ -1,5 +1,5 @@
 const usersRepo = require('./user.repository');
-const tasksRepo = require('../tasks/task.memory.repository');
+// const tasksRepo = require('../tasks/task.repository');
 
 const toResponse = user => {
   const { id, name, login } = user;
@@ -21,7 +21,7 @@ const create = async userInfo => {
 };
 
 const del = async id => {
-  await tasksRepo.resetConnectionsByUserId(id);
+  // await tasksRepo.resetConnectionsByUserId(id);
   return usersRepo.deleteUser(id);
 };
 

@@ -1,18 +1,40 @@
-const boardsRepo = require('./board.memory.repository');
-const tasksRepo = require('../tasks/task.memory.repository');
+const boardsRepo = require('./board.repository');
+// const tasksRepo = require('../tasks/task.repository');
 
-const Board = require('./board.model');
+const toResponse = board => {
+  const { id, title, columns } = board;
+  return { id, title, columns };
+};
 
-const getAll = () => boardsRepo.getAllBoards();
-const get = id => boardsRepo.getBoard(id);
-const create = boardInfo => boardsRepo.createBoard(new Board(boardInfo));
+const getAll = async () => {
+  const boards = await boardsRepo.getAllBoards();
+  return boards.map(board => toResponse(board));
+};
 
-const del = id => {
-  tasksRepo.resetConnectionsByBoardId(id);
+const get = async id => {
+  const board = await boardsRepo.getBoard(id);
+  return toResponse(board);
+};
+
+const del = async id => {
+  // await tasksRepo.resetConnectionsByBoardId(id);
   return boardsRepo.deleteBoard(id);
 };
 
-const update = ({ id, updatedInfo }) =>
-  boardsRepo.updateBoard({ id, updatedInfo });
+const create = async boardInfo => {
+  const newBoard = await boardsRepo.createBoard(boardInfo);
+  return toResponse(newBoard);
+};
 
-module.exports = { getAll, get, create, del, update };
+const update = async ({ id, updatedInfo }) => {
+  const updatedBoard = await boardsRepo.updateBoard({ id, updatedInfo });
+  return toResponse(updatedBoard);
+};
+
+module.exports = {
+  getAll,
+  get,
+  del,
+  create,
+  update
+};
