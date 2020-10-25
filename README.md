@@ -10,6 +10,9 @@ _Couple of tests can fail only if the nodemon has not rebooted yet!_
 
 #### To enable errors, uncomment lines below 56 in app.js
 - - - 
+
+### TASK 4 - MONGO DB
+- - -
 # RS School REST service
 
 ## Prerequisites

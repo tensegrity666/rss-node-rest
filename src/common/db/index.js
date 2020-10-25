@@ -5,7 +5,7 @@ const Task = require('../../resources/tasks/task.model');
 const user1 = new User();
 const user2 = new User();
 const user3 = new User();
-const user4 = new User({ id: '123' });
+const user4 = new User();
 
 const task1 = new Task({ title: 'Some title', boardId: 'b2' });
 const task2 = new Task({ order: 2 });

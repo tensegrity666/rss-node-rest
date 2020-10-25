@@ -1,3 +1,5 @@
+/* eslint-disable no-process-exit */
+
 const { logger, errors } = require('../../config/winston');
 
 const rejectionHandler = (reason = '') => {
@@ -6,6 +8,10 @@ const rejectionHandler = (reason = '') => {
 
   errors.error(message);
   logger.error(message);
+
+  setTimeout(() => {
+    process.exit(1);
+  }, 100);
 };
 
 module.exports = rejectionHandler;
