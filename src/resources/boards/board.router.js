@@ -1,83 +1,62 @@
 const router = require('express').Router();
 const boardsService = require('./board.service');
+const { idScheme, boardScheme } = require('../../common/utils/validator');
 
-router.route('/').get(async (req, res) => {
-  try {
-    const boards = await boardsService.getAll();
+router.get('/', async (req, res) => {
+  const boards = await boardsService.getAll();
 
-    res.json(boards);
-  } catch (error) {
-    throw new Error(`Something goes wrong: ${error.message}`);
-  }
+  res.json(boards);
 });
 
-router.route('/:boardId').get(async (req, res) => {
-  try {
-    const board = await boardsService.get(req.params.boardId);
+router.get('/:boardId', async (req, res) => {
+  const { error } = idScheme.validate(req.params.boardId);
+  if (error) return res.status(400).send(error.message);
 
-    if (!board) {
-      return res.status(404).send('Not found');
-    }
+  const board = await boardsService.get(req.params.boardId);
 
-    res.json(board);
-  } catch (error) {
-    throw new Error(`Something goes wrong: ${error.message}`);
+  if (!board) {
+    return res.sendStatus(404);
   }
+
+  res.json(board);
 });
 
-router.route('/').post(async (req, res) => {
-  try {
-    const boardInfo = {
-      title: req.body.title,
-      columns: req.body.columns,
-      tasks: []
-    };
+router.delete('/:boardId', async (req, res) => {
+  const { error } = idScheme.validate(req.params.boardId);
+  if (error) return res.status(400).send(error.message);
 
-    const board = await boardsService.create(boardInfo);
+  const result = await boardsService.del(req.params.boardId);
 
-    if (!board) {
-      return res.status(400).send('Bad request');
-    }
-
-    res.json(board);
-  } catch (error) {
-    throw new Error(`Something goes wrong: ${error.message}`);
+  if (result.deletedCount === 0) {
+    return res.sendStatus(404);
   }
+
+  res.sendStatus(204);
 });
 
-router.route('/:boardId').delete(async (req, res) => {
-  try {
-    const result = await boardsService.del(req.params.boardId);
+router.post('/', async (req, res) => {
+  const { error } = boardScheme.validate(req.body);
+  if (error) return res.status(400).send(error.message);
 
-    if (!result) {
-      return res.status(404).send('Not found');
-    }
+  const board = await boardsService.create(req.body);
 
-    res.status(204).send('Deleted');
-  } catch (error) {
-    throw new Error(`Something goes wrong: ${error.message}`);
-  }
+  res.json(board);
 });
 
-router.route('/:boardId').put(async (req, res) => {
-  try {
-    const id = req.params.boardId;
+router.put('/:boardId', async (req, res) => {
+  const { error } = idScheme.validate(req.params.boardId);
+  if (error) return res.status(400).send(error.message);
 
-    const updatedInfo = {
-      id,
-      ...req.body
-    };
+  const board = await boardsService.update({
+    id: req.params.boardId,
+    updatedInfo: req.body
+  });
 
-    const board = await boardsService.update({ id, updatedInfo });
-
-    if (!board) {
-      return res.status(400).send('Bad request');
-    }
-
-    res.json(board);
-  } catch (error) {
-    throw new Error(`Something goes wrong: ${error.message}`);
+  if (!board) {
+    return res.sendStatus(404);
   }
+
+  res.json(board);
 });
 
 module.exports = router;

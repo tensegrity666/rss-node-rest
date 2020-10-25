@@ -14,6 +14,14 @@ module.exports = {
         .min(3)
         .max(30)
         .required(),
-      password: Joi.string().required()
+      password: Joi.string()
+        .min(6)
+        .required()
+    }),
+  boardScheme: Joi.object()
+    .options({ abortEarly: false, allowUnknown: false })
+    .keys({
+      title: Joi.string().required(),
+      columns: Joi.array()
     })
 };
