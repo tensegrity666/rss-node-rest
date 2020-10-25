@@ -2,7 +2,12 @@ const { logger } = require('../../config/winston');
 const chalk = require('chalk');
 
 const errorGenerator = () => {
-  console.log(chalk.magenta.bold('Some different non-crashing errors:\n'));
+  console.log(
+    chalk.magenta.bold(
+      '\nTo disable this errors, comment out lines below 59 in app.js\n' +
+        'Some different non-crashing errors:\n'
+    )
+  );
 
   logger.info('Logger Info level example');
   logger.debug('Logger Debug level example');

@@ -29,7 +29,7 @@ morgan.token('body', parseBody);
 app.use(
   morgan(errResponse, {
     skip(req, res) {
-      return res.statusCode < 500;
+      return res.statusCode < 400;
     },
     stream: errors.stream
   })
@@ -56,7 +56,7 @@ app.use(errorHandler);
 // ! ERROR SAMPLES
 console.log(
   chalk.blueBright.bold(
-    '\nTo enable errors, uncomment lines below 56 in app.js\n'
+    '\nTo enable errors, uncomment lines below 59 in app.js\n'
   )
 );
 // errorGenerator();
