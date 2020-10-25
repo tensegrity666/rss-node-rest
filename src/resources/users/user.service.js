@@ -15,10 +15,13 @@ const get = async id => {
   return toResponse(user);
 };
 
-const create = userInfo => usersRepo.createUser(userInfo);
+const create = async userInfo => {
+  const newUser = await usersRepo.createUser(userInfo);
+  return toResponse(newUser);
+};
 
-const del = id => {
-  tasksRepo.resetConnectionsByUserId(id);
+const del = async id => {
+  await tasksRepo.resetConnectionsByUserId(id);
   return usersRepo.deleteUser(id);
 };
 
