@@ -1,21 +1,11 @@
-const uuid = require('uuid');
+const { Schema, model } = require('mongoose');
 
-class Board {
-  constructor({
-    id = uuid(),
-    title = 'Default board',
-    columns = [
-      {
-        id: uuid(),
-        title: 'string',
-        order: 0
-      }
-    ]
-  } = {}) {
-    this.id = id;
-    this.title = title;
-    this.columns = columns;
-  }
-}
+const schema = new Schema(
+  {
+    title: { type: String, required: true },
+    columns: { type: Array, optional: true }
+  },
+  { versionKey: false }
+);
 
-module.exports = Board;
+module.exports = model('Board', schema);
