@@ -1,5 +1,5 @@
 const boardsRepo = require('./board.repository');
-// const tasksRepo = require('../tasks/task.repository');
+const tasksRepo = require('../tasks/task.repository');
 
 const toResponse = board => {
   const { id, title, columns } = board;
@@ -13,11 +13,11 @@ const getAll = async () => {
 
 const get = async id => {
   const board = await boardsRepo.getBoard(id);
-  return toResponse(board);
+  return board && toResponse(board);
 };
 
 const del = async id => {
-  // await tasksRepo.resetConnectionsByBoardId(id);
+  await tasksRepo.resetConnectionsByBoardId(id);
   return boardsRepo.deleteBoard(id);
 };
 

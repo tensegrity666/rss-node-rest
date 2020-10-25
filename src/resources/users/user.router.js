@@ -36,9 +36,7 @@ router.delete('/:userId', async (req, res) => {
 
 router.put('/:userId', async (req, res) => {
   const { error: idError } = idScheme.validate(req.params.userId);
-  const { error: bodyError } = userScheme.validate(req.body);
   if (idError) return res.status(400).send(idError.message);
-  if (bodyError) return res.status(400).send(bodyError.message);
 
   const user = await usersService.update({
     id: req.params.userId,

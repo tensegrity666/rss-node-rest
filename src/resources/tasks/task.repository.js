@@ -2,51 +2,30 @@ const Task = require('./task.model');
 
 const getAllTasks = boardId => Task.find({ boardId });
 
-// const createTask = newTask => {
-//   DB.tasks.push(newTask);
+const getTask = ({ taskId, boardId }) => Task.findOne({ _id: taskId, boardId });
 
-//   return getTask({ boardId: newTask.boardId, taskId: newTask.id });
-// };
+const createTask = newTask => Task.create(newTask);
 
-// const deleteTask = ({ boardId, taskId }) => {
-//   // DB.tasks = DB.tasks.filter(task => task.id !== taskId);
-//   const tasks = getAllTasks(boardId);
+const deleteTask = ({ taskId, boardId }) =>
+  Task.deleteOne({ _id: taskId, boardId });
 
-//   const taskIndex = tasks.findIndex(task => task.id === taskId);
+const updateTask = async ({ taskId, boardId, updatedInfo }) => {
+  await Task.updateOne({ _id: taskId, boardId }, updatedInfo);
+  return getTask({ taskId, boardId });
+};
 
-//   if (taskIndex === -1) return false;
+const resetConnectionsByUserId = userId =>
+  Task.updateMany({ userId }, { userId: null });
 
-//   DB.tasks = tasks.filter(task => task.id !== taskId);
-
-//   return true;
-// };
-
-// const updateTask = ({ taskId, boardId, updatedInfo }) => {
-//   const taskIndex = DB.tasks.findIndex(task => task.id === taskId);
-
-//   if (taskIndex === -1) return false;
-
-//   DB.tasks.splice(taskIndex, 1, updatedInfo);
-
-//   return getTask({ boardId, taskId });
-// };
-
-// const resetConnectionsByUserId = id => {
-//   DB.tasks = DB.tasks.map(task =>
-//     task.userId === id ? { ...task, userId: null } : task
-//   );
-// };
-
-// const resetConnectionsByBoardId = boardId => {
-//   DB.tasks = DB.tasks.filter(task => task.boardId !== boardId);
-// };
+const resetConnectionsByBoardId = boardId =>
+  Task.updateMany({ boardId }, { boardId: null });
 
 module.exports = {
-  getAllTasks
-  // getTask,
-  // deleteTask,
-  // createTask,
-  // updateTask,
-  // resetConnectionsByUserId,
-  // resetConnectionsByBoardId
+  getAllTasks,
+  getTask,
+  deleteTask,
+  createTask,
+  updateTask,
+  resetConnectionsByUserId,
+  resetConnectionsByBoardId
 };

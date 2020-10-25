@@ -3,11 +3,11 @@ const { Schema, model } = require('mongoose');
 const schema = new Schema(
   {
     title: { type: String, required: true },
-    description: { type: String, required: true },
-    order: { type: Number, required: true },
-    columnId: { type: String, required: true },
-    userId: { type: String, required: true },
-    boardId: { type: String, required: true }
+    description: { type: String, required: false },
+    order: { type: Number, required: false },
+    columnId: { type: String, required: false },
+    userId: { type: String, required: false },
+    boardId: { type: String, required: false }
   },
   { versionKey: false }
 );

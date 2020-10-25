@@ -1,8 +1,8 @@
 const tasksRepo = require('./task.repository');
 
-const toResponse = board => {
-  const { id } = board;
-  return { id, ...board };
+const toResponse = task => {
+  const { id, title, order, description, userId, boardId, columnId } = task;
+  return { id, title, order, description, userId, boardId, columnId };
 };
 
 const getAll = async boardId => {
@@ -10,17 +10,26 @@ const getAll = async boardId => {
   return tasks.map(task => toResponse(task));
 };
 
-const get = ({ boardId, taskId }) => tasksRepo.getTask({ boardId, taskId });
+const get = async ({ taskId, boardId }) => {
+  const task = await tasksRepo.getTask({ taskId, boardId });
+  return task && toResponse(task);
+};
 
-const create = newTask => tasksRepo.createTask(newTask);
+const create = async newTask => {
+  const task = await tasksRepo.createTask(newTask);
+  return toResponse(task);
+};
 
-const del = ({ boardId, taskId }) => tasksRepo.deleteTask({ boardId, taskId });
+const del = ({ taskId, boardId }) => tasksRepo.deleteTask({ taskId, boardId });
 
 const update = ({ taskId, boardId, updatedInfo }) =>
   tasksRepo.updateTask({ taskId, boardId, updatedInfo });
 
-const reset = id => tasksRepo.resetConnectionsByUserId(id);
-
-const resetByBoard = boardId => tasksRepo.resetConnectionsByBoardId(boardId);
-
-module.exports = { getAll, get, del, create, update, reset, resetByBoard };
+module.exports = {
+  getAll,
+  get,
+  del,
+  create,
+  update
+  // resetByBoard
+};
