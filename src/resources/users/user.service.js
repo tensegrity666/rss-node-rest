@@ -1,5 +1,6 @@
 const usersRepo = require('./user.repository');
 const tasksRepo = require('../tasks/task.repository');
+const { hashPassword } = require('../../common/utils/hashHelper');
 
 const toResponse = (user) => {
   const { id, name, login } = user;
@@ -17,7 +18,15 @@ const get = async (id) => {
 };
 
 const create = async (userInfo) => {
-  const newUser = await usersRepo.createUser(userInfo);
+  const { password } = userInfo;
+  const hashedPassword = await hashPassword(password);
+
+  const processedInfo = {
+    ...userInfo,
+    password: hashedPassword
+  };
+
+  const newUser = await usersRepo.createUser(processedInfo);
   return toResponse(newUser);
 };
 

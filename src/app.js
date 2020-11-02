@@ -51,7 +51,7 @@ app.use('/', (req, res, next) => {
 
 app.use('/login', loginRouter);
 app.use('/users', checkToken, userRouter);
-app.use('/boards', boardRouter);
+app.use('/boards', checkToken, boardRouter);
 boardRouter.use('/:boardId/tasks', taskRouter);
 
 process
