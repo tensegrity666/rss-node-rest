@@ -15,6 +15,11 @@ __`Tests:       17 passed, 17 total`__<br>
 __`Tests:       17 passed, 17 total`__<br>
 _The information on DB connection (connection string) is stored in __.env__ file_
 - - -
+
+### TASK 5 - Authentication and JWT
+# Results:
+
+- - -
 # RS School REST service
 
 ## Prerequisites
