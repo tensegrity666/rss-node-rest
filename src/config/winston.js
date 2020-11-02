@@ -3,7 +3,7 @@ const { createLogger, format, transports } = require('winston');
 const { combine, timestamp, printf, simple, colorize } = format;
 const { NODE_ENV } = require('./config');
 
-const myFormat = printf(info => {
+const myFormat = printf((info) => {
   const formattedDate = info.timestamp.replace('T', ' ').replace('Z', '');
   const statuscode = Number(info.message.substring(0, 3));
   const message = info.message.substring(4, info.message.length);
