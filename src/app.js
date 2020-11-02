@@ -15,9 +15,11 @@ const errorHandler = require('./common/utils/error-handler');
 const rejectionHandler = require('./common/utils/rejection-handler');
 const exceptionHandler = require('./common/utils/exception-handler');
 
+const loginRouter = require('./resources/login/login.router');
 const userRouter = require('./resources/users/user.router');
 const boardRouter = require('./resources/boards/board.router');
 const taskRouter = require('./resources/tasks/task.router');
+const checkToken = require('./resources/login/check-token');
 
 require('express-async-errors');
 
@@ -47,7 +49,8 @@ app.use('/', (req, res, next) => {
   next();
 });
 
-app.use('/users', userRouter);
+app.use('/login', loginRouter);
+app.use('/users', checkToken, userRouter);
 app.use('/boards', boardRouter);
 boardRouter.use('/:boardId/tasks', taskRouter);
 
