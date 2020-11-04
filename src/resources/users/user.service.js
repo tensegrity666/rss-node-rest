@@ -35,7 +35,17 @@ const del = async (id) => {
   return usersRepo.deleteUser(id);
 };
 
-const update = ({ id, updatedInfo }) =>
-  usersRepo.updateUser({ id, updatedInfo });
+const update = async ({ id, updatedInfo }) => {
+  const { password } = updatedInfo;
+  const hashedPassword = await hashPassword(password);
+
+  const processedInfo = {
+    ...updatedInfo,
+    password: hashedPassword
+  };
+
+  const updatedUser = await usersRepo.updateUser({ id, processedInfo });
+  return toResponse(updatedUser);
+};
 
 module.exports = { getAll, get, create, del, update };

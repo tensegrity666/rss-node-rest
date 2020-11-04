@@ -10,8 +10,8 @@ const deleteUser = (id) => User.deleteOne({ _id: id });
 
 const createUser = (newUser) => User.create(newUser);
 
-const updateUser = async ({ id, updatedInfo }) => {
-  await User.updateOne({ _id: id }, updatedInfo);
+const updateUser = async ({ id, processedInfo }) => {
+  await User.updateOne({ _id: id }, processedInfo);
   return getUser(id);
 };
 
