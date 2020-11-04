@@ -8,7 +8,7 @@ __`Tests:       17 passed, 17 total`__<br>
 `error.log` contains errors with levels > 400 (all errors).
 
 #### To enable errors, uncomment lines below 56 in app.js
-- - - 
+- - -
 
 ### TASK 4 - MONGO DB
 # Results:
